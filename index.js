@@ -1,6 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { createReadStream } from 'node:fs';
+import mongodb from 'mongodb';
+const { MongoClient } = mongodb;
 import crypto from 'node:crypto';
 import http from 'node:http';
 import appSrc from './app.js';
@@ -10,7 +12,8 @@ const app = appSrc(
   bodyParser,
   createReadStream,
   crypto,
-  http
+  http,
+  MongoClient
 );
 
 app.listen(process.env.PORT);

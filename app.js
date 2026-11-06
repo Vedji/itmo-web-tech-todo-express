@@ -1,4 +1,4 @@
-export default function appSrc(express, bodyParser, createReadStream, crypto, http) {
+export default function appSrc(express, bodyParser, createReadStream, crypto, http, MongoClient) {
   const app = express();
   const login = 'ponkratov_na';
 
@@ -74,6 +74,48 @@ app.use((req, res, next) => {
       res.status(502).send('request failed');
     });
   });
+
+app.post('/insert/', async (req, res) => {
+  const { login: userLogin, password, URL } = req.body || {};
+
+  if (
+    typeof userLogin !== 'string' ||
+    typeof password !== 'string' ||
+    typeof URL !== 'string' ||
+    !URL.trim()
+  ) {
+    return res.status(400).type('text/plain')
+      .send('login, password and URL are required');
+  }
+
+  let client;
+
+  try {
+    client = new MongoClient(URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 10000
+  });
+
+    await client.connect();
+
+    await client.db().collection('users').insertOne({
+      login: userLogin,
+      password
+    });
+
+    res.status(200).type('text/plain').send('ok');
+
+  } catch (err) {
+    res.status(502).type('text/plain')
+      .send('database request failed');
+
+  } finally {
+    if (client) {
+      await client.close().catch(() => {});
+    }
+  }
+});
 
   app.all('*', (req, res) => {
     res.type('text/plain').send(login);
