@@ -1,9 +1,30 @@
 services:
-  app:
-    build: .
+  mongo:
+    image: mongo:4.4
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:?Set MONGO_ROOT_USER in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}
+    volumes:
+      - mongo_data:/data/db
     ports:
-      - "${PORT}:${PORT}"
-    env_file:
-      - .env
+      - "127.0.0.1:27017:27017"
     logging:
       driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      PORT: "3000"
+
+volumes:
+  mongo_data:

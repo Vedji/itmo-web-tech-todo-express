@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мои задачи</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <section id="authPanel">
+      <h1>Вход</h1>
+      <form id="authForm">
+        <label for="token">API-токен</label>
+        <input id="token" type="password" autocomplete="off" required>
+        <button type="submit">Войти</button>
+      </form>
+    </section>
+
+    <section id="workspace" hidden>
+      <header>
+        <h1>Мои задачи</h1>
+        <p id="author" class="author"></p>
+        <button id="logout" type="button">Выйти</button>
+      </header>
+
+      <label for="runId">Набор задач</label>
+      <div class="row">
+        <input id="runId" value="manual" maxlength="64" pattern="[A-Za-z0-9_\-]{1,64}">
+        <button id="load" type="button">Открыть</button>
+      </div>
+
+      <form id="taskForm" class="row">
+        <label for="title" class="sr-only">Новая задача</label>
+        <input id="title" maxlength="200" placeholder="Новая задача" required>
+        <button type="submit">Добавить</button>
+      </form>
+
+      <p id="empty" hidden>Задач пока нет.</p>
+      <ul id="tasks" aria-label="Список задач"></ul>
+    </section>
+
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>
